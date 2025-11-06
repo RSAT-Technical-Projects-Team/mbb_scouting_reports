@@ -31,7 +31,9 @@ def get_who_to_foul(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
         pd.Dataframe
             A dataframe describing the who to foul section
     """
-    return pd.DataFrame()
+    opponents = df.loc[(df['teamId'] == team_id), ['jerseyNum', 'fullName', 'ftPct']]
+    who_foul = opponents.sort_values(by=['ftPct'], ascending=True).head(4)
+    return who_foul
 
 def get_who_draws_fouls(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
