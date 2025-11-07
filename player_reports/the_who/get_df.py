@@ -65,7 +65,13 @@ def get_who_draws_fouls(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
         pd.Dataframe
             A dataframe describing the who to foul section
     """
-    return pd.DataFrame()
+    opponents = df.loc[(df['teamId'] == team_id), ['jerseyNum', 'fullName', 'ftaPg']]
+    opponents.columns = ['jerseyNum','fullName', 'FTAs/g']
+    top_players = opponents.sort_values(by=['FTAs/g'], ascending=False).head(4)
+    top_players['Who Draws Fouls'] = top_players['jerseyNum'].astype(str) + ' ' + top_players['fullName']
+
+    who_draws = top_players[['Who Draws Fouls', 'FTAs/g']]
+    return who_draws
 
 def get_who_turnsover(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
@@ -129,7 +135,9 @@ def get_rim_finishers(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
         pd.Dataframe
             A dataframe describing the rim finishers section
     """
-    return pd.DataFrame()
+    team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'fg2Pct']]
+    rim_players = team_df.sort_values(by='fg2Pct', ascending=False).head(4)
+    return rim_players.reset_index(drop=True, inplace=True)
 
 def get_3p_shooters(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
@@ -162,8 +170,10 @@ def get_3p_shooters(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
         pd.Dataframe
             A dataframe describing the 3P Shooters Section
     """
+    team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'fga3Pg', 'fg3Pct']]
 
-    return pd.DataFrame()
+    shooters = team_df.sort_values(by='fg3Pct', ascending=False).tail(4)
+    return shooters.reset_index(drop=True, inplace=True)
 
 def get_who_orb(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
@@ -196,4 +206,7 @@ def get_who_orb(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
         pd.Dataframe
             A dataframe describing the "Who Grabs ORB" Section
     """
-    return pd.DataFrame()
+    team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'orbPg']]
+    
+    orebounders = team_df.sort_values(by='orbPg', ascending=False).tail(4)
+    return orebounders.reset_index(drop=True, inplace=True)
