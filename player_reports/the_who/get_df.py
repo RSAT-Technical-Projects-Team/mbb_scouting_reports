@@ -68,7 +68,8 @@ def get_who_draws_fouls(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     opponents = df.loc[(df['teamId'] == team_id), ['jerseyNum', 'fullName', 'ftaPg']]
     opponents.columns = ['jerseyNum','fullName', 'FTAs/g']
     top_players = opponents.sort_values(by=['FTAs/g'], ascending=False).head(4)
-    top_players['Who Draws Fouls'] = top_players['jerseyNum'].astype(str) + ' ' + top_players['fullName']
+    top_players['Who Draws Fouls'] = (top_players['jerseyNum'].astype(str) + ' '
+                                      + top_players['fullName'])
 
     who_draws = top_players[['Who Draws Fouls', 'FTAs/g']]
     return who_draws
@@ -103,7 +104,14 @@ def get_who_turnsover(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
         pd.Dataframe
             A dataframe describing the turnover section
     """
-    return pd.DataFrame()
+    opponents = df.loc[(df['teamId'] == team_id), ['jerseyNum', 'fullName', 'tovPg']]
+    opponents.columns = ['jerseyNum','fullName', 'TOV/Game']
+    top_players = opponents.sort_values(by=['TOV/Game'], ascending=True).head(4)
+    top_players['Who Turns the Ball Over'] = (top_players['jerseyNum'].astype(str)
+                                              + ' ' + top_players['fullName'])
+
+    who_foul = top_players[['Who Turns the Ball Over', 'TOV/Game']]
+    return who_foul
 
 def get_rim_finishers(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
@@ -207,6 +215,5 @@ def get_who_orb(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
             A dataframe describing the "Who Grabs ORB" Section
     """
     team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'orbPg']]
-    
     orebounders = team_df.sort_values(by='orbPg', ascending=False).tail(4)
     return orebounders.reset_index(drop=True, inplace=True)
