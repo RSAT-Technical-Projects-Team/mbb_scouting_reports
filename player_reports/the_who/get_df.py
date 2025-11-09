@@ -33,7 +33,9 @@ def get_who_to_foul(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
     opponents = df.loc[(df['teamId'] == team_id), ['jerseyNum', 'fullName', 'ftPct']]
     who_foul = opponents.sort_values(by=['ftPct'], ascending=True).head(4)
-    return who_foul
+    who_foul['Who To Foul'] = (who_foul['jerseyNum'].astype(str)
+                                              + ' ' + who_foul['fullName'])
+    return who_foul[['Who To Foul', 'ftPct']]
 
 def get_who_draws_fouls(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
@@ -106,7 +108,7 @@ def get_who_turnsover(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
     opponents = df.loc[(df['teamId'] == team_id), ['jerseyNum', 'fullName', 'tovPg']]
     opponents.columns = ['jerseyNum','fullName', 'TOV/Game']
-    top_players = opponents.sort_values(by=['TOV/Game'], ascending=True).head(4)
+    top_players = opponents.sort_values(by=['TOV/Game'], ascending=False).head(4)
     top_players['Who Turns the Ball Over'] = (top_players['jerseyNum'].astype(str)
                                               + ' ' + top_players['fullName'])
 
@@ -144,8 +146,11 @@ def get_rim_finishers(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
             A dataframe describing the rim finishers section
     """
     team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'fg2Pct']]
+    #is fg2Pct the right column for rim finishing? double check this...
     rim_players = team_df.sort_values(by='fg2Pct', ascending=False).head(4)
-    return rim_players.reset_index(drop=True, inplace=True)
+    rim_players['Rim Finishers'] = (rim_players['jerseyNum'].astype(str)
+                                              + ' ' + rim_players['fullName'])
+    return rim_players[['Rim Finishers', 'fg2Pct']]
 
 def get_3p_shooters(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
@@ -181,7 +186,9 @@ def get_3p_shooters(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'fga3Pg', 'fg3Pct']]
 
     shooters = team_df.sort_values(by='fg3Pct', ascending=False).tail(4)
-    return shooters.reset_index(drop=True, inplace=True)
+    shooters['3P Shooters'] = (shooters['jerseyNum'].astype(str)
+                                              + ' ' + shooters['fullName'])
+    return shooters[['3P Shooters', 'fga3Pg', 'fg3Pct']]
 
 def get_who_orb(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
@@ -216,4 +223,6 @@ def get_who_orb(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
     team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'orbPg']]
     orebounders = team_df.sort_values(by='orbPg', ascending=False).tail(4)
-    return orebounders.reset_index(drop=True, inplace=True)
+    orebounders['Who ORB'] = (orebounders['jerseyNum'].astype(str)
+                                              + ' ' + orebounders['fullName'])
+    return orebounders[['Who ORB', 'orbPg']]
