@@ -1,2 +1,3 @@
 gspread_auth/
 .DS_STORE
+.vscode
