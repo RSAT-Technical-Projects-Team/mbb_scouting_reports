@@ -1,5 +1,7 @@
+"""
+Builds a dataframe from raw data for the four factors section 
+"""
 import pandas as pd
-import numpy as np
 
 def get_four_factors_df(team_df : pd.DataFrame, team_id : int, espn : bool) -> pd.DataFrame:
     """

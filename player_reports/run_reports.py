@@ -104,7 +104,7 @@ def main():
     if len(date.split("/")) != 3:
         print("Date must be in m/d/y format")
         return
-    m, d, y = date.split("/")
+    m, _, y = date.split("/")
 
     if m in ["11", "12"]:
         season = int(y) + 1

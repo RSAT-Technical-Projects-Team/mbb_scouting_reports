@@ -1,3 +1,6 @@
+""" 
+Gets and cleans data from espn using sportsdataverse
+"""
 #TODO: Refactor!!! This is a mess. Also write documentation
 import pandas as pd
 import numpy as np
@@ -122,7 +125,7 @@ def build_playerbox(data : pd.DataFrame, pbp : pd.DataFrame) -> pd.DataFrame:
         out=np.zeros_like(den, dtype=float),
         where=den != 0
     )
-    
+
     player_df["MidRate"] = np.divide(
         player_df["mid_fga_sum"].to_numpy(),
         den,
