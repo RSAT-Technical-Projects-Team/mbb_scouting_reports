@@ -2,3 +2,4 @@ gspread_auth/
 .DS_STORE
 .vscode
 .venv/
+*.ipynb
