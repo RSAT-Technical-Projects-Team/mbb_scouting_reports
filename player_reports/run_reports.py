@@ -9,7 +9,7 @@ import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
 
-from get_data.get_data import build_playerbox, build_fourfacts
+from get_data.get_data import build_playerbox, build_fourfacts, fetch_espn_data
 
 def generate_reports(player_df : pd.DataFrame,  team_df : pd.DataFrame,
                      team_id : str, team_name : str, date : str, uses_espn : bool) -> None:
@@ -37,7 +37,7 @@ def generate_reports(player_df : pd.DataFrame,  team_df : pd.DataFrame,
     team_name_short = team_name.split()[0]
     title = f"{month_day} - {team_name_short}"
     print(f"Generating Report {title}")
-    shot_dist_df = shot_dist.get_shot_dist_df(player_df, team_id)
+    shot_dist_df = shot_dist.get_shot_dist_df(player_df, team_id, uses_espn)
     who_to_foul = the_who.get_who_to_foul(player_df, team_id)
     who_draws_fouls = the_who.get_who_draws_fouls(player_df, team_id)
     who_turnsover = the_who.get_who_turnsover(player_df, team_id)
@@ -98,23 +98,23 @@ def main():
     """
     Sample main function which currently is the way our user interacts with the program
     """
-    team_name = "memphis" #input("Input Team Name: ")
-    date = "12/25/2025" #input("Input Date (m/d/y): ")
-    uses_espn = True #input("Use ESPN Data? (y/n): ") == "y"
+    team_name = input("Input Team Name: ")
+    date = input("Input Date (m/d/y): ")
+    uses_espn = input("Use ESPN Data? (y/n): ") == "y"
     if len(date.split("/")) != 3:
         print("Date must be in m/d/y format")
         return
     m, d, y = date.split("/")
 
     if m in ["11", "12"]:
-        print("ns")
         season = int(y) + 1
     else:
         season = int(y)
  
     if uses_espn:
-        player_df = build_playerbox(season)
-        team_df = build_fourfacts(season)
+        p_data, t_data, pbp = fetch_espn_data(season)
+        player_df = build_playerbox(p_data, pbp)
+        team_df = build_fourfacts(t_data, pbp)
         team_name = difflib.get_close_matches(team_name, player_df['full_team_name'].tolist(), n=1, cutoff = 0)[0]
         team_id = player_df.loc[player_df['full_team_name'] == team_name, 'teamId'].values[0]
     else:

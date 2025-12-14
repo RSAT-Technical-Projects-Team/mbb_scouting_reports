@@ -99,5 +99,4 @@ def get_four_factors_df(team_df : pd.DataFrame, team_id : int, espn : bool) -> p
     result_df = result_df.fillna(-1)
     result_df = result_df.mul(100).round(2)
 
-    print(result_df)
     return result_df

@@ -145,12 +145,16 @@ def get_rim_finishers(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
         pd.Dataframe
             A dataframe describing the rim finishers section
     """
-    team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'fg2Pct']]
-    #is fg2Pct the right column for rim finishing? double check this...
-    rim_players = team_df.sort_values(by='fg2Pct', ascending=False).head(4)
+    if 'rimFG' in df.columns:
+        team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'rimFG']]
+    
+    else:
+        team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName']]
+        team_df['rimFG'] = 0.0 
+    rim_players = team_df.sort_values(by='rimFG', ascending=False).head(4)
     rim_players['Rim Finishers'] = (rim_players['jerseyNum'].astype(str)
                                               + ' ' + rim_players['fullName'])
-    return rim_players[['Rim Finishers', 'fg2Pct']]
+    return rim_players[['Rim Finishers', 'rimFG']]
 
 def get_3p_shooters(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
