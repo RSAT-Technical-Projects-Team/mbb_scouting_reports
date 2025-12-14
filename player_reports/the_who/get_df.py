@@ -185,7 +185,7 @@ def get_3p_shooters(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
     team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'fga3Pg', 'fg3Pct']]
 
-    shooters = team_df.sort_values(by='fg3Pct', ascending=False).tail(4)
+    shooters = team_df.sort_values(by='fg3Pct', ascending=False).head(4)
     shooters['3P Shooters'] = (shooters['jerseyNum'].astype(str)
                                               + ' ' + shooters['fullName'])
     return shooters[['3P Shooters', 'fga3Pg', 'fg3Pct']]

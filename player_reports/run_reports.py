@@ -7,9 +7,12 @@ import four_factors.get_df as four_factors
 
 import pandas as pd
 import gspread
+from google.oauth2.service_account import Credentials
+
+from get_data.get_data import build_playerbox, build_fourfacts
 
 def generate_reports(player_df : pd.DataFrame,  team_df : pd.DataFrame,
-                     team_name : str, title : str) -> None:
+                     team_id : str, team_name : str, date : str, uses_espn : bool) -> None:
     """
     Takes dataframes generated from shot_dist and the_who functions and connects to google drive
     to automatically fill in the report
@@ -20,13 +23,20 @@ def generate_reports(player_df : pd.DataFrame,  team_df : pd.DataFrame,
             A dataframe describing the player data dump from CBBAnalytics
         team_df : pd.DataFrame
             A dataframe describing the team data dump from CBBAnalytics
+        team_id : str
+            The opposing team id
         team_name : str
-            The opposing team name
-        title : str
-            The title of the report
+            Opposing team name
+        date : str
+            The date of the game
+        uses_espn : bool
+            Whether the data was pulled from ESPN or CBBAnalytics
     """
 
-    team_id = team_df.loc[team_df['teamMarket'] == team_name, 'teamId'].values[0]
+    month_day = date.rsplit("/", 1)[0]
+    team_name_short = team_name.split()[0]
+    title = f"{month_day} - {team_name_short}"
+    print(f"Generating Report {title}")
     shot_dist_df = shot_dist.get_shot_dist_df(player_df, team_id)
     who_to_foul = the_who.get_who_to_foul(player_df, team_id)
     who_draws_fouls = the_who.get_who_draws_fouls(player_df, team_id)
@@ -36,13 +46,18 @@ def generate_reports(player_df : pd.DataFrame,  team_df : pd.DataFrame,
     who_rim = the_who.get_rim_finishers(player_df, team_id)
     who_orb = the_who.get_who_orb(player_df, team_id)
 
-    #four_facts_df = four_factors.get_four_factors_df(team_df, team_id)
+    four_fact = four_factors.get_four_factors_df(team_df, team_id, uses_espn)
 
-    gc = gspread.oauth(
-        credentials_filename="gspread_user/gspread_auth/credentials.json",
-        authorized_user_filename="gspread_user/gspread_auth/authorized_user.json"
-    )
-    gc_url = "https://docs.google.com/spreadsheets/d/1ItBPiRC8oAw9ca2RSwYjePAYbfe_I0juqLAOnZxyj0s/edit?gid=930660395#gid=930660395"
+
+    SCOPES = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive",
+    ]
+
+    creds = Credentials.from_service_account_file("gspread_user/gspread_auth/service_account.json", scopes=SCOPES)
+    gc = gspread.authorize(creds)
+
+    gc_url = "https://docs.google.com/spreadsheets/d/1ItBPiRC8oAw9ca2RSwYjePAYbfe_I0juqLAOnZxyj0s/edit?gid=976552522#gid=976552522"
     sh = gc.open_by_url(gc_url)
 
     starting_cols = {
@@ -56,6 +71,10 @@ def generate_reports(player_df : pd.DataFrame,  team_df : pd.DataFrame,
     template = [sheet for sheet in sh.worksheets() if
                 sheet.title == "DONT EDIT -- MBB Game Template 25-26"][0]
     template = template.duplicate(new_sheet_name = title)
+
+    str_date = pd.to_datetime(date).strftime("%A, %B %d, %Y")
+    template.update([[f"Rice v {team_name.split()[0]}"]], "E2:K2")
+    template.update([[str_date]], "E4:K4")
     who_dfs = [[who_to_foul, who_turnsover, who_3p], [who_draws_fouls, who_rim, who_orb]]
     for idx_1 in range(2):
         col_1, col_2 = starting_cols[idx_1]
@@ -72,17 +91,38 @@ def generate_reports(player_df : pd.DataFrame,  team_df : pd.DataFrame,
     shot_dist_matrix = shot_dist_df.to_numpy().tolist()
     template.update(shot_dist_matrix, "D90:N107")
 
+    four_fact_matrix = four_fact.to_numpy().tolist()
+    template.update(four_fact_matrix, "G12:N27")
+
 def main():
     """
     Sample main function which currently is the way our user interacts with the program
     """
-    team_name = input("Input Team Name: ")
-    date = input("Input Date: ")
-    player_df = pd.read_csv("../sample_data/D1_PlayerBox.csv")
-    team_df = pd.read_csv("../sample_data/D1_TeamFourFact.csv")
-    team_name = difflib.get_close_matches(team_name, team_df['teamMarket'].tolist(), n=1)[0]
-    title = f"{date} - {team_name}"
-    print(f"Generating Report {title}")
-    generate_reports(player_df, team_df, team_name, title)
+    team_name = "memphis" #input("Input Team Name: ")
+    date = "12/25/2025" #input("Input Date (m/d/y): ")
+    uses_espn = True #input("Use ESPN Data? (y/n): ") == "y"
+    if len(date.split("/")) != 3:
+        print("Date must be in m/d/y format")
+        return
+    m, d, y = date.split("/")
+
+    if m in ["11", "12"]:
+        print("ns")
+        season = int(y) + 1
+    else:
+        season = int(y)
+ 
+    if uses_espn:
+        player_df = build_playerbox(season)
+        team_df = build_fourfacts(season)
+        team_name = difflib.get_close_matches(team_name, player_df['full_team_name'].tolist(), n=1, cutoff = 0)[0]
+        team_id = player_df.loc[player_df['full_team_name'] == team_name, 'teamId'].values[0]
+    else:
+        player_df = pd.read_csv("../sample_data/D1_PlayerBox.csv")
+        team_df = pd.read_csv("../sample_data/D1_TeamFourFact.csv")
+        team_name = difflib.get_close_matches(team_name, team_df['teamMarket'].tolist(), n=1)[0]
+        team_id = team_df.loc[team_df['teamMarket'] == team_name, 'teamId'].values[0]
+
+    generate_reports(player_df, team_df, team_id, team_name, date, uses_espn)
 if __name__ == "__main__":
     main()
