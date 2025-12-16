@@ -3,3 +3,5 @@
 .venv/
 *.ipynb
 gspread_user/
+README_files/
+README.html
