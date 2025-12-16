@@ -79,8 +79,12 @@ def get_four_factors_df(team_df : pd.DataFrame, team_id : int, espn : bool) -> p
     pctile_list[9] = "fga3Rate"
     pctile_list[15] = "transition_rate"
     tile = [x + "Pctile" for x in pctile_list]
-    agst = ["opp_" + x for x in pct]
-    agst_pct = ["opp_" +  x + "Pctile" for x in pctile_list]
+    if espn:
+        agst = ["opp_" + x for x in pct]
+        agst_pct = ["opp_" +  x + "Pctile" for x in pctile_list]
+    else:
+        agst = [x + "Agst" for x in pct]
+        agst_pct = [x + "AgstPctile" for x in pctile_list]
 
 
     # can do the four factors, defense, and transition

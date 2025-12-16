@@ -95,18 +95,18 @@ def build_playerbox(data : pd.DataFrame, pbp : pd.DataFrame) -> pd.DataFrame:
         mid_fgm_sum = ('mid_fgm', 'sum')
     ) #getting rim and midrange data
     den = shot_dist_special['rim_fga_sum'].to_numpy()
-    player_df["rimFG"] = np.divide(
+    shot_dist_special["rimFG"] = np.divide(
         shot_dist_special['rim_fgm_sum'].to_numpy(),
         den,
-        out=den,
+        out=np.zeros_like(den, dtype=float),
         where=den != 0
         )
 
     den = shot_dist_special['mid_fga_sum'].to_numpy()
-    player_df["midFG"] = np.divide(
-        shot_dist_special['mid_fga_sum'].to_numpy(),
+    shot_dist_special["midFG"] = np.divide(
+        shot_dist_special['mid_fgm_sum'].to_numpy(),
         den,
-        out=den,
+        out=np.zeros_like(den, dtype=float),
         where=den != 0
     )
 

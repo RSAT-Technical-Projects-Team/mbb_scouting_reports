@@ -54,7 +54,7 @@ def generate_reports(player_df : pd.DataFrame,  team_df : pd.DataFrame,
         "https://www.googleapis.com/auth/drive",
     ]
 
-    creds = Credentials.from_service_account_file("gspread_user/gspread_auth/service_account.json", scopes=scopes)
+    creds = Credentials.from_service_account_file("gspread_user/service_account.json", scopes=scopes)
     gc = gspread.authorize(creds)
 
     gc_url = "https://docs.google.com/spreadsheets/d/1ItBPiRC8oAw9ca2RSwYjePAYbfe_I0juqLAOnZxyj0s/edit?gid=976552522#gid=976552522"

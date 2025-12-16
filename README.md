@@ -31,11 +31,15 @@ For (3), using ESPN data relies on scraping data from the internet and calculati
 
 - For the ESPN data, we define transitions (and therefore transition eFG and rates) as anything occuring within 8 seconds of a change of possession, this follows the definition used by [Instat](https://instatglossary.hudl.com/basketball/events/play-types/transitions/) Additionally, we define Rim Shots as any shot considered a "Dunk", "Layup" or "Putback" by ESPN's play by play data, and midranges as any shot worth two points not in those categories. For those reasons, these categories may differ from the CBBAnalytics implementation.
 
+- For the CBBAnalytics implementation, since we do not have rim, midrange, or transition data, these missing values are simply filled in with -1 (or -100%)
+
+- Finally, to run the program, you need access to RSATTP's internal gmail which is used to physically edit the google sheets, please contact the project maintainer for access if you are a member of RSAT.
+
 ### Development
 
 This work was built by RSATTP during the Fall 2025 semester, with contributions from the following individuals:
 
-- [Lou Zhou](https://lou-zhou.github.io/) *Project Lead, Please Contact lz80@rice.edu for questions*
+- [Lou Zhou](https://lou-zhou.github.io/) *Project Maintainer, Please Contact lz80@rice.edu for questions*
 - [David Coronado](https://www.linkedin.com/in/david-coronado-189642289) 
 - [Russell Chen](https://www.linkedin.com/in/russell-chenn) 
 - [Jude Thomas](https://www.linkedin.com/in/jude-thomas-336970316/) 
