@@ -29,7 +29,7 @@ For (3), using ESPN data relies on scraping data from the internet and calculati
 
 - Due to issues with the sportsdataverse library, running this program will require you to downgrade your XGBoost version to a version prior to 3.1. For this reason, we recommend creating a virtual environment to run this program in.
 
-- For the ESPN data, we define transitions (and therefore transition eFG and rates) as Anything occuring within 8 seconds of a change of possession, this follows the definition used by Instat (https://instatglossary.hudl.com/basketball/events/play-types/transitions/) Additionally, we define Rim Shots as any shot considered a "Dunk", "Layup" or "Putback" by ESPN's play by play data, and midranges as any shot worth two points not in those categories. For those reasons, these categories may differ from the CBBAnalytics implementation.
+- For the ESPN data, we define transitions (and therefore transition eFG and rates) as anything occuring within 8 seconds of a change of possession, this follows the definition used by [Instat](https://instatglossary.hudl.com/basketball/events/play-types/transitions/) Additionally, we define Rim Shots as any shot considered a "Dunk", "Layup" or "Putback" by ESPN's play by play data, and midranges as any shot worth two points not in those categories. For those reasons, these categories may differ from the CBBAnalytics implementation.
 
 ### Development
 
