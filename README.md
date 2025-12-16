@@ -1,23 +1,23 @@
 ## Automating Scouting Reports for Rice Men's Basketball
 
-This is an internal tool developed by the Rice Sport Analytics Team Technical Projects team which looks to automate the generation of pre-match scouting reports for Rice MBB. 
+This is an internal tool developed by the Rice Sport Analytics Team Technical Projects team which looks to automate the generation of pre-match scouting reports for Rice MBB.
 
 To download the libraries needed to run the program, simply run the following command in your terminal:
-```
+
+```         
 pip install -r requirements.txt
 ```
+
 N.B. Because some libraries may have specific version requirements, it is recommended to use a virtual environment when installing the dependencies.
 
 ### Usage
-To generate a scouting report, run the `run_reports.py`. From there, you will be prompted to enter three things:
-1. Opponent Name
-2. Date
-3. Whether to use ESPN or CBB Analytics Data.
+
+To generate a scouting report, run the `run_reports.py`. From there, you will be prompted to enter three things: 1. Opponent Name 2. Date 3. Whether to use ESPN or CBB Analytics Data.
 
 For (3), using ESPN data relies on scraping data from the internet and calculating statistics, inputting them into the program. More traditionally, using CBB Analytics data requires downloading CSV files from CBB Analytics and inputting them into the `sample_data` directory. Currently, there is 2024 data as a sample.
 
 ### Future Work
-1. Building frontend shiny app for easier use
-    a. This also helps deal with error handling with invalid inputs
-2. Testing and making sure the program generates accurate results
 
+1.  Building frontend shiny app for easier use
+    a.  This also helps deal with error handling with invalid inputs
+2.  Testing and making sure the program generates accurate results
