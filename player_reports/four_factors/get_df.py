@@ -64,7 +64,7 @@ def get_four_factors_df(team_df : pd.DataFrame, team_id : int, espn : bool) -> p
         pd.Dataframe
             A dataframe describing the four factors section
     """
-    rice_id = 242 if espn else 104135 
+    rice_id = 242 if espn else 104135
     opponents = team_df.loc[team_df["teamId"] == team_id].copy()
     rice = team_df.loc[team_df["teamId"] == rice_id].copy() #just  rice numbers
 

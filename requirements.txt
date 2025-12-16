@@ -1,0 +1,5 @@
+pandas
+gspread
+sportsdataverse
+
+xgboost < 3.1

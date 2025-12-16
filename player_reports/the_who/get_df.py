@@ -147,10 +147,10 @@ def get_rim_finishers(df : pd.DataFrame, team_id : int) -> pd.DataFrame:
     """
     if 'rimFG' in df.columns:
         team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName', 'rimFG']]
-    
+
     else:
         team_df = df.loc[df['teamId'] == team_id, ['jerseyNum', 'fullName']]
-        team_df['rimFG'] = 0.0 
+        team_df['rimFG'] = 0.0
     rim_players = team_df.sort_values(by='rimFG', ascending=False).head(4)
     rim_players['Rim Finishers'] = (rim_players['jerseyNum'].astype(str)
                                               + ' ' + rim_players['fullName'])

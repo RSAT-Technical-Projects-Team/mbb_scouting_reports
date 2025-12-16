@@ -49,12 +49,12 @@ def generate_reports(player_df : pd.DataFrame,  team_df : pd.DataFrame,
     four_fact = four_factors.get_four_factors_df(team_df, team_id, uses_espn)
 
 
-    SCOPES = [
+    scopes = [
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive",
     ]
 
-    creds = Credentials.from_service_account_file("gspread_user/gspread_auth/service_account.json", scopes=SCOPES)
+    creds = Credentials.from_service_account_file("gspread_user/gspread_auth/service_account.json", scopes=scopes)
     gc = gspread.authorize(creds)
 
     gc_url = "https://docs.google.com/spreadsheets/d/1ItBPiRC8oAw9ca2RSwYjePAYbfe_I0juqLAOnZxyj0s/edit?gid=976552522#gid=976552522"
@@ -110,7 +110,7 @@ def main():
         season = int(y) + 1
     else:
         season = int(y)
- 
+
     if uses_espn:
         p_data, t_data, pbp = fetch_espn_data(season)
         player_df = build_playerbox(p_data, pbp)
