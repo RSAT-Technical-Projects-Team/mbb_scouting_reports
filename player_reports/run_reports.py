@@ -126,3 +126,29 @@ def main():
     generate_reports(player_df, team_df, team_id, team_name, date, uses_espn)
 if __name__ == "__main__":
     main()
+
+def main_shiny(team_name, date, uses_espn):
+    date_str = str(date)
+    y, m, d = date_str.split("-")
+
+    if m in ["11", "12"]:
+        season = int(y) + 1
+    else:
+        season = int(y)
+ 
+    if uses_espn:
+        p_data, t_data, pbp = fetch_espn_data(season)
+        player_df = build_playerbox(p_data, pbp)
+        team_df = build_fourfacts(t_data, pbp)
+        team_name = difflib.get_close_matches(team_name, player_df['full_team_name'].tolist(), n=1, cutoff = 0)[0]
+        team_id = player_df.loc[player_df['full_team_name'] == team_name, 'teamId'].values[0]
+    else:
+        player_df = pd.read_csv("../sample_data/D1_PlayerBox.csv")
+        team_df = pd.read_csv("../sample_data/D1_TeamFourFact.csv")
+        team_name = difflib.get_close_matches(team_name, team_df['teamMarket'].tolist(), n=1)[0]
+        team_id = team_df.loc[team_df['teamMarket'] == team_name, 'teamId'].values[0]
+    
+    generate_reports(player_df, team_df, team_id, team_name, date_str, uses_espn)
+    return f"Report successfully generated for {team_name} on {date_str}!"
+if __name__ == "__main__":
+    main()

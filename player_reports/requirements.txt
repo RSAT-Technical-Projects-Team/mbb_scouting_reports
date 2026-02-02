@@ -1,0 +1,10 @@
+shiny
+datetime
+difflib
+pathlib
+shiny
+xgboost<1.6
+sportsdataverse
+pandas
+gspread
+google.oauth2.service_account
